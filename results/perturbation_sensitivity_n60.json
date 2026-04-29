@@ -1,0 +1,450 @@
+{
+  "n": 60,
+  "table": {
+    "cc": 23,
+    "cn": 9,
+    "nc": 2,
+    "nn": 26
+  },
+  "p_control": 0.5333333333333333,
+  "p_probed": 0.4166666666666667,
+  "wilson_ci_control": [
+    0.4089342702715789,
+    0.6537209395856151
+  ],
+  "wilson_ci_probed": [
+    0.30064278558341617,
+    0.5427191897735989
+  ],
+  "diff": 0.11666666666666664,
+  "newcombe_ci": [
+    -0.0604332076197541,
+    0.28386330754433103
+  ],
+  "cohens_h": 0.2341642276299145,
+  "mcnemar_p": 0.0654296875,
+  "fisher_p": 0.2726733325458052,
+  "fisher_odds_ratio": 1.6,
+  "rows": [
+    {
+      "seed": 0,
+      "control_collapse": true,
+      "control_epoch": 244,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 1,
+      "control_collapse": true,
+      "control_epoch": 251,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 2,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 3,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 4,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 5,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 6,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 7,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 8,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 9,
+      "control_collapse": true,
+      "control_epoch": 231,
+      "probed_collapse": true,
+      "probed_epoch": 106
+    },
+    {
+      "seed": 10,
+      "control_collapse": true,
+      "control_epoch": 197,
+      "probed_collapse": true,
+      "probed_epoch": 248
+    },
+    {
+      "seed": 11,
+      "control_collapse": true,
+      "control_epoch": 148,
+      "probed_collapse": true,
+      "probed_epoch": 188
+    },
+    {
+      "seed": 12,
+      "control_collapse": true,
+      "control_epoch": 64,
+      "probed_collapse": true,
+      "probed_epoch": 83
+    },
+    {
+      "seed": 13,
+      "control_collapse": true,
+      "control_epoch": 102,
+      "probed_collapse": true,
+      "probed_epoch": 133
+    },
+    {
+      "seed": 14,
+      "control_collapse": true,
+      "control_epoch": 257,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 15,
+      "control_collapse": true,
+      "control_epoch": 135,
+      "probed_collapse": true,
+      "probed_epoch": 171
+    },
+    {
+      "seed": 16,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 17,
+      "control_collapse": true,
+      "control_epoch": 214,
+      "probed_collapse": true,
+      "probed_epoch": 271
+    },
+    {
+      "seed": 18,
+      "control_collapse": true,
+      "control_epoch": 102,
+      "probed_collapse": true,
+      "probed_epoch": 127
+    },
+    {
+      "seed": 19,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 20,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 21,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 22,
+      "control_collapse": true,
+      "control_epoch": 139,
+      "probed_collapse": true,
+      "probed_epoch": 174
+    },
+    {
+      "seed": 23,
+      "control_collapse": true,
+      "control_epoch": 198,
+      "probed_collapse": true,
+      "probed_epoch": 252
+    },
+    {
+      "seed": 24,
+      "control_collapse": true,
+      "control_epoch": 203,
+      "probed_collapse": true,
+      "probed_epoch": 258
+    },
+    {
+      "seed": 25,
+      "control_collapse": true,
+      "control_epoch": 235,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 26,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 27,
+      "control_collapse": true,
+      "control_epoch": 126,
+      "probed_collapse": true,
+      "probed_epoch": 158
+    },
+    {
+      "seed": 28,
+      "control_collapse": true,
+      "control_epoch": 190,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 29,
+      "control_collapse": true,
+      "control_epoch": 179,
+      "probed_collapse": true,
+      "probed_epoch": 227
+    },
+    {
+      "seed": 30,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": true,
+      "probed_epoch": 220
+    },
+    {
+      "seed": 31,
+      "control_collapse": true,
+      "control_epoch": 153,
+      "probed_collapse": true,
+      "probed_epoch": 194
+    },
+    {
+      "seed": 32,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 33,
+      "control_collapse": true,
+      "control_epoch": 121,
+      "probed_collapse": true,
+      "probed_epoch": 154
+    },
+    {
+      "seed": 34,
+      "control_collapse": true,
+      "control_epoch": 81,
+      "probed_collapse": true,
+      "probed_epoch": 104
+    },
+    {
+      "seed": 35,
+      "control_collapse": true,
+      "control_epoch": 143,
+      "probed_collapse": true,
+      "probed_epoch": 181
+    },
+    {
+      "seed": 36,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 37,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 38,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 39,
+      "control_collapse": true,
+      "control_epoch": 213,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 40,
+      "control_collapse": true,
+      "control_epoch": 160,
+      "probed_collapse": true,
+      "probed_epoch": 203
+    },
+    {
+      "seed": 41,
+      "control_collapse": true,
+      "control_epoch": 66,
+      "probed_collapse": true,
+      "probed_epoch": 82
+    },
+    {
+      "seed": 42,
+      "control_collapse": true,
+      "control_epoch": 189,
+      "probed_collapse": true,
+      "probed_epoch": 239
+    },
+    {
+      "seed": 43,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 44,
+      "control_collapse": true,
+      "control_epoch": 252,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 45,
+      "control_collapse": true,
+      "control_epoch": 85,
+      "probed_collapse": true,
+      "probed_epoch": 50
+    },
+    {
+      "seed": 46,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 47,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 48,
+      "control_collapse": true,
+      "control_epoch": 237,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 49,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": true,
+      "probed_epoch": 157
+    },
+    {
+      "seed": 50,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 51,
+      "control_collapse": true,
+      "control_epoch": 140,
+      "probed_collapse": true,
+      "probed_epoch": 178
+    },
+    {
+      "seed": 52,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 53,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 54,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 55,
+      "control_collapse": true,
+      "control_epoch": 209,
+      "probed_collapse": true,
+      "probed_epoch": 264
+    },
+    {
+      "seed": 56,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 57,
+      "control_collapse": true,
+      "control_epoch": 276,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 58,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    },
+    {
+      "seed": 59,
+      "control_collapse": false,
+      "control_epoch": null,
+      "probed_collapse": false,
+      "probed_epoch": null
+    }
+  ]
+}

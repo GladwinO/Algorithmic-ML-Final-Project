@@ -171,7 +171,27 @@ def _build_heatmap(histories):
     return cos, sign
 
 
-def _plot_heatmaps(cos, sign, out_path):
+def _build_heatmap_with_std(per_cell_seed_scalars):
+    """per_cell_seed_scalars: list of dicts with keys 'cos','sign', each a list of
+    per-seed final-window means. Length = len(DEPTHS)*len(FREQS), row-major."""
+    cos_mean = np.zeros((len(DEPTHS), len(FREQS)))
+    cos_std = np.zeros((len(DEPTHS), len(FREQS)))
+    sign_mean = np.zeros((len(DEPTHS), len(FREQS)))
+    sign_std = np.zeros((len(DEPTHS), len(FREQS)))
+    idx = 0
+    for i in range(len(DEPTHS)):
+        for j in range(len(FREQS)):
+            cs = np.asarray(per_cell_seed_scalars[idx]["cos"])
+            ss = np.asarray(per_cell_seed_scalars[idx]["sign"])
+            cos_mean[i, j] = cs.mean()
+            cos_std[i, j] = cs.std(ddof=1) if len(cs) > 1 else 0.0
+            sign_mean[i, j] = ss.mean()
+            sign_std[i, j] = ss.std(ddof=1) if len(ss) > 1 else 0.0
+            idx += 1
+    return cos_mean, cos_std, sign_mean, sign_std
+
+
+def _plot_heatmaps(cos, sign, out_path, cos_std=None, sign_std=None):
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
     im0 = axes[0].imshow(cos, cmap="RdYlGn", vmin=0, vmax=1, aspect="auto")
@@ -184,9 +204,10 @@ def _plot_heatmaps(cos, sign, out_path):
     axes[0].set_ylabel("Network Depth")
     for i in range(len(DEPTHS)):
         for j in range(len(FREQS)):
-            axes[0].text(
-                j, i, f"{cos[i,j]:.2f}", ha="center", va="center", fontsize=11
-            )
+            txt = f"{cos[i,j]:.2f}"
+            if cos_std is not None:
+                txt += f"\n±{cos_std[i,j]:.2f}"
+            axes[0].text(j, i, txt, ha="center", va="center", fontsize=10)
     plt.colorbar(im0, ax=axes[0])
 
     im1 = axes[1].imshow(sign, cmap="RdYlGn", vmin=0.5, vmax=1, aspect="auto")
@@ -199,9 +220,10 @@ def _plot_heatmaps(cos, sign, out_path):
     axes[1].set_ylabel("Network Depth")
     for i in range(len(DEPTHS)):
         for j in range(len(FREQS)):
-            axes[1].text(
-                j, i, f"{sign[i,j]:.2f}", ha="center", va="center", fontsize=11
-            )
+            txt = f"{sign[i,j]:.2f}"
+            if sign_std is not None:
+                txt += f"\n±{sign_std[i,j]:.2f}"
+            axes[1].text(j, i, txt, ha="center", va="center", fontsize=10)
     plt.colorbar(im1, ax=axes[1])
 
     plt.tight_layout()
@@ -209,20 +231,25 @@ def _plot_heatmaps(cos, sign, out_path):
     plt.close(fig)
 
 
-def _summarise(cos, sign):
+def _summarise(cos, sign, cos_std=None, sign_std=None):
     flat_cos = cos.flatten()
     i_max, i_min = int(np.argmax(flat_cos)), int(np.argmin(flat_cos))
     di_max, fi_max = divmod(i_max, len(FREQS))
     di_min, fi_min = divmod(i_min, len(FREQS))
 
     print("\n=== Heatmap summary ===")
+    def _fmt(arr, std, i, j):
+        if std is None:
+            return f"{arr[i,j]:.3f}"
+        return f"{arr[i,j]:.3f} ± {std[i,j]:.3f}"
+
     print(
         f"Best cosine sim:  depth={DEPTHS[di_max]}, "
-        f"freqs={FREQS[fi_max]}  -> {cos[di_max, fi_max]:.3f}"
+        f"freqs={FREQS[fi_max]}  -> {_fmt(cos, cos_std, di_max, fi_max)}"
     )
     print(
         f"Worst cosine sim: depth={DEPTHS[di_min]}, "
-        f"freqs={FREQS[fi_min]}  -> {cos[di_min, fi_min]:.3f}"
+        f"freqs={FREQS[fi_min]}  -> {_fmt(cos, cos_std, di_min, fi_min)}"
     )
 
     # Crude additive prediction: predict bottom-right from top-right + bottom-left
@@ -283,12 +310,15 @@ def _summarise(cos, sign):
 def main():
     os.makedirs(FIG_DIR, exist_ok=True)
 
-    n_seeds_rugg = 5
-    print(f"=== Experiment 5: ruggedness sweep at depth=3 ({n_seeds_rugg} seeds) ===")
+    # GPU is fast enough that 20 seeds is cheap and gives ~2x tighter error
+    # bars than 5 seeds.
+    N_SEEDS = 20
+
+    print(f"=== Experiment 5: ruggedness sweep at depth=3 ({N_SEEDS} seeds) ===")
     rugg_hist = []
     for cfg, label in zip(ruggedness_configs, ruggedness_labels):
         per_seed = []
-        for s in range(n_seeds_rugg):
+        for s in range(N_SEEDS):
             cfg_s = dict(cfg)
             cfg_s["seed"] = s
             cfg_s["dataset_seed"] = 42 + s
@@ -298,10 +328,16 @@ def main():
             for k in per_seed[0]
         }
         rugg_hist.append(agg)
+        finals_cos = np.array(
+            [np.mean(h["cosine_sim"][-50:]) for h in per_seed]
+        )
+        finals_sign = np.array(
+            [np.mean(h["sign_agreement"][-50:]) for h in per_seed]
+        )
         print(
-            f"  {label:<22s} final cos={np.mean(agg['cosine_sim'][-50:]):.3f}  "
-            f"sign={np.mean(agg['sign_agreement'][-50:]):.3f}  "
-            f"loss={agg['true_loss'][-1]:.4f}"
+            f"  {label:<22s} cos={finals_cos.mean():.3f}±{finals_cos.std(ddof=1):.3f}"
+            f"  sign={finals_sign.mean():.3f}±{finals_sign.std(ddof=1):.3f}"
+            f"  loss={agg['true_loss'][-1]:.4f}"
         )
 
     plot_metrics_over_training(
@@ -319,38 +355,36 @@ def main():
         out_dir=FIG_DIR,
     )
 
-    n_seeds = 5
     print(
         f"\n=== Experiment 6: 2D depth x ruggedness sweep "
-        f"({len(interaction_configs)} cells x {n_seeds} seeds) ==="
+        f"({len(interaction_configs)} cells x {N_SEEDS} seeds) ==="
     )
-    inter_hist = []
+    per_cell_seed_scalars = []
     for cfg in interaction_configs:
-        per_seed = []
-        for s in range(n_seeds):
+        cell_cos, cell_sign = [], []
+        for s in range(N_SEEDS):
             cfg_s = dict(cfg)
             cfg_s["seed"] = s
             cfg_s["dataset_seed"] = 42 + s
-            per_seed.append(run_experiment_regression(cfg_s))
-        # Aggregate: average each metric series across seeds element-wise
-        agg = {
-            k: list(np.mean([h[k] for h in per_seed], axis=0))
-            for k in per_seed[0]
-        }
-        inter_hist.append(agg)
+            h = run_experiment_regression(cfg_s)
+            cell_cos.append(float(np.mean(h["cosine_sim"][-50:])))
+            cell_sign.append(float(np.mean(h["sign_agreement"][-50:])))
+        per_cell_seed_scalars.append({"cos": cell_cos, "sign": cell_sign})
+        cs, ss = np.array(cell_cos), np.array(cell_sign)
         print(
             f"  {cfg['_label']:<20s}  "
-            f"cos={np.mean(agg['cosine_sim'][-50:]):.3f}  "
-            f"sign={np.mean(agg['sign_agreement'][-50:]):.3f}  "
-            f"(over {n_seeds} seeds)"
+            f"cos={cs.mean():.3f}±{cs.std(ddof=1):.3f}  "
+            f"sign={ss.mean():.3f}±{ss.std(ddof=1):.3f}"
         )
 
-    cos, sign = _build_heatmap(inter_hist)
+    cos_mean, cos_std, sign_mean, sign_std = _build_heatmap_with_std(
+        per_cell_seed_scalars
+    )
     out_path = os.path.join(FIG_DIR, "heatmap_depth_vs_ruggedness.png")
-    _plot_heatmaps(cos, sign, out_path)
+    _plot_heatmaps(cos_mean, sign_mean, out_path, cos_std=cos_std, sign_std=sign_std)
     print(f"\nSaved heatmap to {out_path}")
 
-    _summarise(cos, sign)
+    _summarise(cos_mean, sign_mean, cos_std=cos_std, sign_std=sign_std)
 
 
 if __name__ == "__main__":
