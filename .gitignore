@@ -13,3 +13,4 @@ checkpoints/
 *.npy
 *.npz
 .DS_Store
+REPORT.md
