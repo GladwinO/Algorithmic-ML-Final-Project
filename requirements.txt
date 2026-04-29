@@ -1,0 +1,16 @@
+# Install with: pip install -r requirements.txt
+#
+# On Linux, the default `torch` wheel from PyPI bundles CUDA 12.x runtime
+# libraries, so a CUDA-capable GPU is used automatically when present.
+# On CPU-only machines the same wheel still works (just slower).
+#
+# If you need a specific CUDA build (e.g. cu121 / cu124 / cpu-only on Linux,
+# or a Windows build), install torch separately from
+# https://download.pytorch.org/whl/ before running this file.
+
+torch>=2.4
+torchvision>=0.19
+numpy>=1.26
+matplotlib>=3.8
+scipy>=1.11
+scikit-learn>=1.4
