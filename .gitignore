@@ -14,3 +14,10 @@ checkpoints/
 *.npz
 .DS_Store
 REPORT.md
+
+web_claude_prompt.txt
+stats_results.txt
+decisions_needed.txt
+paper_stats_insertions.tex
+regression_experiment_proposal.tex
+PDFs/
