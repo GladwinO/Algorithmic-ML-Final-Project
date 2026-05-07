@@ -1,0 +1,121 @@
+
+==============================================================================
+1. CHAIN-LENGTH EFFECT (depth ablation, per-seed)
+==============================================================================
+N seeds = 10, window = last 50 epochs of 300.
+Per-depth final cosine (mean of last 50 epochs):
+  depth=1: n=10, mean=0.9310, sd=0.0125
+  depth=2: n=10, mean=0.7776, sd=0.0184
+  depth=3: n=10, mean=0.7559, sd=0.0193
+  depth=4: n=10, mean=0.6152, sd=0.1602
+
+One-way ANOVA across depths: F=25.2084, p=5.80e-09
+
+Pairwise Welch t-tests with Bonferroni correction (m=6):
+  pair               t       dof         raw p         adj p
+  d1 vs d2        21.810     15.80      3.24e-13      1.94e-12
+  d1 vs d3        24.117     15.39      1.21e-13      7.24e-13
+  d1 vs d4         6.216      9.11        0.0001        0.0009
+  d2 vs d3         2.569     17.96        0.0193        0.1159
+  d2 vs d4         3.185      9.24        0.0107        0.0645
+  d3 vs d4         2.758      9.26        0.0216        0.1298
+
+OLS regression (final cosine ~ depth + log(beta_sg) + log(width) + dataset)
+using all_histories.json (1 seed per cell, original ablation grid):
+  n=13, residual dof=8, sigma^2=0.007778
+  name                    coef        SE                    95% CI       t         p
+  intercept             0.6958    0.2384          [+0.146, +1.246]    2.92    0.0193
+  depth                -0.1056    0.0371          [-0.191, -0.020]   -2.85    0.0216
+  log(beta_sg)          0.0687    0.0288          [+0.002, +0.135]    2.38    0.0445
+  log(width)            0.0498    0.0450          [-0.054, +0.153]    1.11    0.3008
+  dataset[moons]        0.0327    0.0922          [-0.180, +0.245]    0.36    0.7318
+
+Note: configs are one-factor-at-a-time around a baseline, not a full grid;
+the OLS coefficients quantify direction/magnitude but the design is unbalanced.
+
+==============================================================================
+2. CONTROLLED-DEPTH EXPERIMENT (capacity held fixed, per-seed)
+==============================================================================
+Target params = 12737; widths per depth: {'1': 3184, '2': 110, '3': 78, '4': 64}
+Per-depth final cosine (mean of last 50 epochs):
+  depth=1 (width=3184): n=10, mean=0.9866, sd=0.0003
+  depth=2 (width=110): n=10, mean=0.8031, sd=0.0193
+  depth=3 (width=78): n=10, mean=0.7576, sd=0.0208
+  depth=4 (width=64): n=10, mean=0.6152, sd=0.1602
+
+Pairwise Welch t-tests with Bonferroni correction (m=3):
+  pair               t       dof         raw p         adj p
+  d2 vs d3         5.070     17.91      8.10e-05        0.0002
+  d3 vs d4         2.788      9.30        0.0205        0.0615
+  d2 vs d4         3.683      9.26        0.0048        0.0144
+
+==============================================================================
+3. COLLAPSE RATE (binomial test)
+==============================================================================
+Baseline (depth=4, moons, beta_sg=5): 3/10 seeds collapsed.
+Exact binomial test, H0: p=0 (vs greater): p-value = 1.20e-34
+Observed proportion = 0.300, 95% CI (Clopper-Pearson) = [0.067, 0.652]
+(H0: p=0 is degenerate; with k>=1 the p-value is exactly 0 in the limit.
+ The CI is the more informative quantity here.)
+
+==============================================================================
+4. COLLAPSE TIMING (n=3 detections, t-distribution CI)
+==============================================================================
+Detected collapse epochs: [244, 251, 231]
+Mean = 242.00, SD = 10.15, n = 3
+95% CI (t, df=2): [216.79, 267.21]
+NOTE: small-sample CI; df=2 yields a wide t-critical (~4.30) and the CI is
+highly sensitive to the three observations.
+
+==============================================================================
+5. PER-LAYER COSINE SIMILARITY (pairwise t-tests, Bonferroni)
+==============================================================================
+Per-seed final cosine (mean of last 50 epochs), 10 seeds x 5 Linear layers (index 0 = input-side, last = readout):
+  layer 0: mean=0.0559, sd=0.0967
+  layer 1: mean=0.1077, sd=0.0627
+  layer 2: mean=0.1604, sd=0.0612
+  layer 3: mean=0.4666, sd=0.0559
+  layer 4: mean=1.0000, sd=0.0000
+
+NOTE: the readout layer (highest index) is identical for true vs surrogate
+by construction (no surrogate activation between it and the loss), so its
+cosine is 1.0. Statistical comparisons are between hidden layers only.
+Pairwise paired t-tests (m=3, Bonferroni):
+  pair                   t     dof         raw p         adj p
+  L3 vs L2             10.729       9      1.99e-06      5.96e-06
+  L2 vs L1              1.939       9        0.0844        0.2533
+  L1 vs L0              1.173       9        0.2710        0.8131
+
+==============================================================================
+6. SATURATION vs COSINE CORRELATION
+==============================================================================
+N pairs (epoch x seed) = 3000
+Pearson r  = +0.0029, two-sided p = 0.8753
+Spearman rho = -0.1454, two-sided p = 1.20e-15
+
+==============================================================================
+7. BETA_SG SWEEP
+==============================================================================
+Per-beta_sg summary:
+   beta_sg    collapse      mean_final_cos
+         2        3/10              0.6639
+         3        3/10              0.6530
+         5        3/10              0.6163
+         7        3/10              0.5861
+        10        3/10              0.5706
+
+2x5 contingency (collapse vs no-collapse across beta_sg):
+  chi-square = 0.0000, dof = 4, p = 1.0000
+  Permutation p-value (B=10000): 1.0000
+
+Spearman correlation (beta_sg, mean_final_cos): rho = -1.0000
+  Exact two-sided permutation p (n=5, 120 perms): 0.0167
+
+==============================================================================
+8. PERTURBATION SENSITIVITY (paired, N=60)
+==============================================================================
+Discordant pairs: control-only=9, probed-only=2
+Exact binomial test on discordant pairs (9/11, H0: p=0.5):
+  p-value = 0.0654
+  McNemar p (from JSON) = 0.0654
+  Newcombe 95% CI on rate diff = [-0.0604, +0.2839]

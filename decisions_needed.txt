@@ -1,0 +1,18 @@
+DECISION 1: Regression experiment
+Should we add the sine-frequency regression experiment as Section 3.5
+or a new Section 4? This adds approximately one page including the
+ruggedness heatmap figure. It directly answers Prediction 4 about
+landscape ruggedness having a secondary effect relative to depth.
+Without it, Prediction 4 is stated but not empirically tested.
+Write YES or NO after discussing with teammate.
+
+DECISION 2: Introduction framing of regression
+If Decision 1 is YES, the introduction abstract and Section 2
+predictions paragraph need one additional sentence each referencing
+the ruggedness experiment. Flag this for human revision after
+Decision 1 is resolved.
+
+DECISION 3: Chain rule mention in appendix implications
+The appendix currently references Equation (chain rule label).
+Verify that the equation label eq:chainrule was successfully added
+in Part 3 and that the cross-reference compiles correctly.

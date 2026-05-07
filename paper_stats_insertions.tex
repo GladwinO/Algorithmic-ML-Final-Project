@@ -1,0 +1,174 @@
+% =============================================================================
+% PAPER INSERTIONS — statistical significance additions
+% =============================================================================
+% This file contains drop-in text for each section of the manuscript. Every
+% number is from results/per_seed_data.json + results/*.json, computed by
+% stats_significance.py. The phrasing follows standard research-paper conventions
+% (test name, statistic, dof where applicable, exact p-value, multiple-comparison
+% correction noted explicitly).
+%
+% N = 10 seeds per cell unless otherwise stated. Window for "final cosine" is
+% the mean over the last 50 of 300 epochs. Welch's t-test is used for unpaired
+% group comparisons; paired t-test is used for within-seed layer comparisons.
+% Bonferroni correction is applied to all pairwise families.
+% =============================================================================
+
+
+% -----------------------------------------------------------------------------
+% SECTION 2.2 — METRICS  (one sentence at the end of the section)
+% -----------------------------------------------------------------------------
+% Insert as the final sentence of Section 2.2:
+
+Throughout, group comparisons use Welch's $t$-test, within-seed layer
+comparisons use a paired $t$-test, families of pairwise comparisons are
+Bonferroni-corrected, and proportion intervals are Clopper--Pearson exact;
+all $p$-values are two-sided unless stated otherwise.
+
+
+% -----------------------------------------------------------------------------
+% SECTION 3 — REPLICATION AND THE CHAIN-LENGTH EFFECT
+% -----------------------------------------------------------------------------
+% Insert immediately AFTER the chain-rule equation (Equation~3) and BEFORE the
+% sentence "Each extra layer therefore introduces another mismatched factor...":
+
+A one-way ANOVA on the per-seed final cosine (mean of the last 50 epochs,
+$N = 10$ seeds per depth) confirms that depth has a highly significant effect
+on alignment, $F(3, 36) = 25.21$, $p = 5.8 \times 10^{-9}$. Bonferroni-corrected
+Welch $t$-tests ($m = 6$) show that depth~1 is significantly better aligned
+than every deeper network: $t(15.8) = 21.81$, $p_{\mathrm{adj}} < 10^{-11}$
+versus depth~2; $t(15.4) = 24.12$, $p_{\mathrm{adj}} < 10^{-11}$ versus
+depth~3; and $t(9.1) = 6.22$, $p_{\mathrm{adj}} = 9 \times 10^{-4}$ versus
+depth~4. Pairwise comparisons among the deeper networks (2 vs.\ 3, 2 vs.\ 4,
+3 vs.\ 4) do not survive correction ($p_{\mathrm{adj}} \in [0.06, 0.13]$),
+which reflects the much larger seed-to-seed variance at depth~4
+($\mathrm{SD} = 0.16$) caused by the late-training collapse documented in
+Section~4. The same one-factor-at-a-time OLS regression as in
+Gygax and Zenke (2024) puts confidence intervals on each effect:
+the depth coefficient is $-0.106$ ($95\%$~CI $[-0.191, -0.020]$, $p = 0.022$),
+the $\log\beta_{\mathrm{sg}}$ coefficient is $+0.069$
+($95\%$~CI $[+0.002, +0.135]$, $p = 0.044$), and neither $\log(\text{width})$
+nor dataset reaches significance.
+
+
+% -----------------------------------------------------------------------------
+% SECTION 3 — CAPACITY-CONTROLLED DEPTH (after Figure 1 description)
+% -----------------------------------------------------------------------------
+% Insert immediately AFTER the sentence describing Figure~1 ("...exhibits a
+% sharp late-training collapse around epoch 250.") and BEFORE the next
+% paragraph "This finding sharpens the original result substantially.":
+
+Pairwise Welch $t$-tests on the capacity-controlled per-seed final cosines
+($N = 10$ per depth, Bonferroni $m = 3$) confirm that depth degrades alignment
+even when parameter count is held fixed at $\approx\!12{,}737$:
+depth~2 (mean $0.803$) vs.\ depth~3 (mean $0.758$) gives
+$t(17.9) = 5.07$, $p_{\mathrm{adj}} = 2.4 \times 10^{-4}$, and depth~2 vs.\
+depth~4 (mean $0.615$) gives $t(9.3) = 3.68$, $p_{\mathrm{adj}} = 0.014$.
+The depth-3-vs-depth-4 comparison is marginal after correction
+($t(9.3) = 2.79$, $p_{\mathrm{adj}} = 0.062$), again driven by the elevated
+depth-4 variance.
+
+
+% -----------------------------------------------------------------------------
+% SECTION 4 — LATE-TRAINING COLLAPSE
+% -----------------------------------------------------------------------------
+% Insert immediately AFTER the first sentence stating the collapse rate
+% ("...about 30\% of 4-layer moons runs show a sudden, sustained drop..."):
+
+The observed rate of $3/10$ corresponds to a Clopper--Pearson 95\%
+confidence interval of $[0.067, 0.652]$; with $N = 10$ the interval is wide
+but excludes zero, establishing the existence of the phenomenon while
+leaving its true rate uncertain. The mean detected collapse epoch
+$\bar{t} = 242.0$ has a $95\%$ $t$-distribution confidence interval of
+$[216.8, 267.2]$ (df~$= 2$); this is the conservative reading of the
+"$242 \pm 10.1$" reported in the figure caption, which is a standard
+deviation rather than a confidence interval.
+
+
+% -----------------------------------------------------------------------------
+% SECTION 4 — SATURATION HYPOTHESIS REJECTION (in the bottom paragraph
+% that lists the four failed hypotheses, after "...essentially zero correlation.")
+% -----------------------------------------------------------------------------
+% Insert as the next sentence after "...Pearson r(saturation, cosine) = 0.008,
+% essentially zero correlation.":
+
+A formal test on $N = 3{,}000$ epoch-by-seed pairs confirms the null:
+Pearson $r = +0.003$, two-sided $p = 0.875$. We cannot reject the hypothesis
+that saturation and cosine alignment are linearly uncorrelated.
+
+
+% -----------------------------------------------------------------------------
+% SECTION 5 — PER-LAYER STORY  (immediately after the gradient-mass values)
+% -----------------------------------------------------------------------------
+% Insert immediately AFTER "...mean ||g_l||_2 = 0.08, 0.17, 0.15, 0.27 for
+% layers 0, 1, 2, readout, the global cosine tracks the readout's cosine
+% almost exactly.":
+
+The per-layer separation is statistically very clean. Across $N = 10$ seeds,
+the per-seed final cosines (mean of the last 50 epochs) are
+$0.056 \pm 0.097$, $0.108 \pm 0.063$, $0.160 \pm 0.061$, and
+$0.467 \pm 0.056$ for hidden layers $0$ through $3$ respectively. A
+within-seed paired $t$-test (Bonferroni $m = 3$) shows that the readout-side
+hidden layer is far better aligned than its neighbour ($t(9) = 10.73$,
+$p_{\mathrm{adj}} = 6 \times 10^{-6}$), while the three input-side hidden
+layers are statistically indistinguishable from one another (L2 vs.\ L1:
+$t(9) = 1.94$, $p_{\mathrm{adj}} = 0.25$; L1 vs.\ L0: $t(9) = 1.17$,
+$p_{\mathrm{adj}} = 0.81$). The "input-side layers are perpetually
+misaligned" reading is therefore not just a per-seed visual impression
+but a tight statistical separation between a single coherent
+output-aligned regime and a single coherent input-orthogonal regime.
+
+
+% -----------------------------------------------------------------------------
+% SECTION 6 — beta_sg ROBUSTNESS  (in the existing paragraph, after the
+% sentence ending "...drifts from 0.66 to 0.57 as $\beta_{\mathrm{sg}}$
+% increases from 2 to 10.")
+% -----------------------------------------------------------------------------
+% Insert as the next sentence:
+
+The monotone drift in final alignment is itself statistically significant
+under an exact two-sided permutation Spearman test
+($\rho = -1.0$, $p = 0.017$, $n = 5$ levels), so the small final-cosine
+effect of $\beta_{\mathrm{sg}}$ is real even though the collapse rate is
+identical at all five steepnesses (a $2 \times 5$ permutation chi-square
+gives $p = 1.0$, as expected when every cell is exactly $3/10$).
+
+
+% -----------------------------------------------------------------------------
+% SECTION 6 — POWER RERUN FOR INSTRUMENTATION  (replace or augment the existing
+% McNemar sentence with an exact-binomial framing for clarity)
+% -----------------------------------------------------------------------------
+% Optional: append immediately AFTER "...McNemar p = 0.0654.":
+
+The equivalent exact binomial test on the $11$ discordant pairs
+($9$ control-only collapses vs.\ $2$ probed-only collapses) gives
+$p = 0.065$ (Newcombe 95\% CI on the rate difference $[-0.060, +0.284]$,
+which includes zero). The directional effect is consistent across two
+independent statistical lenses but the perturbation result remains
+formally non-significant at $\alpha = 0.05$, as already noted in
+Section~7.
+
+
+% -----------------------------------------------------------------------------
+% SECTION 2 (METHODOLOGY) — STATISTICAL ANALYSIS SUBSECTION  (optional new
+% subsection if the team prefers to consolidate methods in one place)
+% -----------------------------------------------------------------------------
+% Insert as a new Section~2.4 if desired:
+
+\subsection{Statistical analysis}
+\label{sec:stats}
+For each cell of the experiment grid we run $N = 10$ random seeds and
+report the mean of the cosine similarity over the last $50$ of $300$
+training epochs as a per-seed scalar. Group comparisons across
+architectures use Welch's $t$-test (unequal variances); within-seed
+comparisons across layers use a paired $t$-test. Families of pairwise
+tests are Bonferroni-corrected at the family level and reported as
+$p_{\mathrm{adj}}$. One-way ANOVA is used to test for any difference
+across more than two depths. Exact binomial and Clopper--Pearson
+intervals are used for proportions, and paired binary outcomes are
+tested with both McNemar's test and the exact binomial on the
+discordant pairs. Spearman correlations on small samples (the
+$\beta_{\mathrm{sg}}$ sweep, $n = 5$) use exact two-sided permutation
+$p$-values. The Welch--Satterthwaite degrees of freedom are reported
+to one decimal place. All analyses are reproduced by
+\texttt{stats\_significance.py} from the saved per-seed scalars in
+\texttt{results/per\_seed\_data.json}.

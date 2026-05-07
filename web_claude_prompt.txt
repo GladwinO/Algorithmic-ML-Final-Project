@@ -1,0 +1,471 @@
+PROMPT FOR WEB-BROWSER CLAUDE AGENT  (full revision: structure + text + stats)
+==============================================================================
+
+Attach to your message before sending:
+  1. Algorithmic_ML_Final_Report.pdf  (the current paper)
+
+Then paste everything from "===== BEGIN PROMPT =====" onwards.
+The stats block at the bottom is part of the prompt - do NOT remove it.
+
+
+===== BEGIN PROMPT =====
+
+You are revising a 13-page LaTeX research paper titled "Surrogate vs True
+Gradient: When and Why Does the Direction Disagreement Emerge?" by Gladwin
+Osakwe and Nalini Ramanathan. The current paper is attached as
+Algorithmic_ML_Final_Report.pdf.
+
+Your job: produce one and only one fenced LaTeX code block containing the
+FULL revised paper source - same documentclass, packages, sections, equations,
+figure/equation labels, citations, and bibliography as the attached PDF -
+modified by all of the edits below. After the LaTeX block, return a short
+bullet-point change log enumerating which edits you applied and the anchor
+sentence each insertion keys off of.
+
+Do not invent numbers. Do not add new figures. Do not modify the abstract,
+introduction, conclusion, limitations, references, or any figure caption
+except as explicitly listed below.
+
+==============================================================================
+PART 1 - STRUCTURAL ADDITION (do this first)
+==============================================================================
+
+Add a new subsection at the END of Section 2 (after Section 2.3) titled
+"Theoretical Predictions" with the label \label{sec:predictions}. Body:
+
+"From the chain rule compounding mechanism we derive four predictions that
+organize the empirical sections that follow. First, cosine similarity should
+decrease monotonically with depth, and this decrease should persist when
+parameter count is held constant, ruling out dimensional concentration as an
+explanation. Second, input-side layers should show worse alignment than
+output-side layers, since they accumulate the most compounded surrogate error
+through backpropagation. Third, the mismatch should be more sensitive to
+depth than to surrogate steepness $\beta_{\mathrm{sg}}$, because depth scales
+the number of compounded mismatched factors while $\beta_{\mathrm{sg}}$ only
+affects the magnitude of each individual factor. Fourth, landscape ruggedness
+should have a secondary effect relative to depth, because ruggedness affects
+the loss geometry but not the number of surrogate approximations in the
+backpropagation chain. Sections~3 through~6 test each prediction in turn."
+
+
+==============================================================================
+PART 2 - SECTION OPENING REWRITES
+==============================================================================
+Replace ONLY the opening sentence(s) as specified. Do not change anything else
+in each section.
+
+(2a) Section 3 opening: replace the sentence beginning "Our first task is to
+confirm..." with:
+
+"The chain rule product in Equation~\eqref{eq:chainrule} predicts that each
+additional layer introduces another mismatched derivative factor between
+MLP-true and MLP-surrogate, compounding the surrogate error multiplicatively
+with depth independent of parameter count (Prediction~1,
+Section~\ref{sec:predictions}). We test this prediction with a
+capacity-controlled depth sweep and confirm it holds across the full training
+trajectory."
+
+(2b) Section 4 opening: replace the sentence beginning "Looking at individual
+training trajectories..." with:
+
+"The chain rule analysis (Section~\ref{sec:predictions}) predicts static
+misalignment that worsens with depth, but does not predict dynamic changes
+over the training trajectory. We ask whether the mismatch is constant
+throughout training or whether it evolves. Looking at individual training
+trajectories rather than seed-averaged endpoints reveals a phenomenon that is
+invisible in any aggregate plot: approximately 30\% of 4-layer runs show a
+sudden, sustained drop in cosine similarity around epoch 240, while the
+remaining seeds maintain a steady level for the entire run."
+
+(2c) Section 5 opening: replace the sentence beginning "With the four
+mechanistic hypotheses ruled out, we turned to a per-layer decomposition..."
+with:
+
+"Prediction~2 (Section~\ref{sec:predictions}) states that if surrogate error
+compounds multiplicatively through backpropagation, input-side layers should
+show the worst alignment since they accumulate the most compounded error.
+With the four mechanistic hypotheses ruled out, we test this prediction by
+turning to a per-layer decomposition of the cosine similarity. The result
+partially confirms and partially complicates this picture in a way that is
+essential for understanding why training succeeds despite the mismatch."
+
+(2d) Section 6 opening: replace the sentence beginning "The conclusions of
+Sections 4 and 5 each rest on choices that could be wrong..." with:
+
+"Predictions~3 and~4 (Section~\ref{sec:predictions}) state that the mismatch
+should be more sensitive to depth than to $\beta_{\mathrm{sg}}$, and that
+landscape ruggedness should have a secondary effect relative to depth. The
+conclusions of Sections~3 through~5 also rest on specific experimental
+choices that could be wrong. We now test both the remaining predictions and
+the robustness of all prior conclusions."
+
+
+==============================================================================
+PART 3 - CHAIN RULE CONSOLIDATION
+==============================================================================
+
+(3a) In Section 3, attach the equation label \label{eq:chainrule} to the
+chain rule product equation (the displayed equation showing
+$\partial L/\partial W^{(\ell)} \propto \prod_k \sigma'(z^{(k)}) \cdot
+W^{(k+1)\top}$). Leave the equation itself and the following sentence
+("Each extra layer therefore introduces another mismatched factor...")
+unchanged.
+
+(3b) In Section 5, find the sentence "they sit at the deepest end of the
+chain rule, so most products of small derivatives accumulate in their
+gradient" and replace it with:
+
+"consistent with the multiplicative compounding established in
+Equation~\eqref{eq:chainrule}, the gradient at input-side layers carries the
+longest product of mismatched derivative factors."
+
+(3c) In Section 2.3, if the chain rule is mentioned, remove that mention
+entirely. Section 2.3 describes the collapse detector and does not need to
+reference the chain rule.
+
+
+==============================================================================
+PART 4 - UNAMBIGUOUS TEXT FIXES
+==============================================================================
+
+(4a) Abstract:
+- Change "recently quantified the static gap" to "recently measured the gap
+  at a single training step".
+- After "dominates the direction-mismatch" add the phrase ", as measured by
+  cosine similarity and per-parameter sign agreement".
+
+(4b) Introduction:
+- After the Gygax and Zenke depth-dominance claim, append parenthetically:
+  "(as shown in their Section~4 analysis, Figure~4C)".
+- Change "a scaled sigmoid bump" to "a scaled fast sigmoid derivative" and
+  add the citation \citep{zenke2018superspike} immediately after. (The
+  citekey is zenke2018superspike for "SuperSpike: Supervised Learning in
+  Multilayer Spiking Neural Networks", Neural Computation 2018; if not
+  already in the bibliography add it as a @article entry, authors Zenke and
+  Ganguli, year 2018, journal "Neural Computation", volume 30, number 6,
+  pages 1514-1541.)
+- Ensure the Zenke and Vogels 2021 citation is directly attached to
+  "remarkably robust to the specific choice of surrogate derivative".
+- At the end of the second paragraph add: "This directly addresses our
+  research question of whether the gradient mismatch documented in a
+  five-parameter toy network generalizes to deeper networks on genuinely
+  nonconvex tasks."
+
+(4c) Section 2.1:
+- At the very start, before the equations, add:
+  "We use sigmoid-activation MLPs rather than Heaviside SNNs because the
+  latter have no computable true gradient -- the entire motivation for
+  surrogate gradients is that the true gradient does not exist. The steep
+  sigmoid with $\beta_f = 50$ is numerically indistinguishable from a
+  Heaviside outside a vanishingly thin band around zero, so our setup
+  preserves the essential difficulty while enabling exact gradient
+  computation."
+- At the end of Section 2.1, after describing the twin-network setup, add:
+  "Note that while weights are shared at each epoch for comparison, the
+  training trajectory of the true network will diverge from what the
+  surrogate network would produce if trained independently, since the
+  gradient updates differ."
+
+(4d) Section 4: replace "a single coherent late-training event" with
+"a single, reproducible event occurring consistently between epochs 231 and
+251".
+
+(4e) Section 5: change "the global cosine similarity is the gradient-mass-
+weighted average of the per-layer cosines" to "we define the global cosine
+similarity as the gradient-mass-weighted average of the per-layer cosines
+(derived from first principles)".
+
+(4f) Figure 3 caption: prepend the sentence "This figure validates that our
+choice of detection threshold $\tau = 0.15$ is not arbitrary -- it sits at
+the point where the detector transitions from flagging noise to flagging a
+real phenomenon." at the very start of the existing caption.
+
+(4g) Section 6 beta_sg robustness paragraph: at the start of that paragraph
+add: "Prediction~3 states that the mismatch should be more sensitive to
+depth than to $\beta_{\mathrm{sg}}$ because depth scales the number of
+compounded factors while $\beta_{\mathrm{sg}}$ only affects each factor's
+magnitude."
+
+(4h) Limitations section: add to the dataset discussion: "The moons and
+circles datasets were chosen specifically because their nonlinear decision
+boundaries produce genuinely nonconvex loss landscapes in sigmoid MLPs,
+directly addressing our original motivation of extending the paper's
+toy-network analysis to settings with rougher optimization landscapes."
+
+
+==============================================================================
+PART 5 - STATISTICAL SIGNIFICANCE INSERTIONS (the new numerical content)
+==============================================================================
+
+Conventions:
+- N = 10 seeds per cell unless explicitly stated otherwise.
+- "Final cosine" = mean of cosine similarity over the last 50 of 300 epochs.
+- Welch's t-test for unpaired group comparisons, Welch-Satterthwaite dof to
+  one decimal place.
+- Paired t-test for within-seed layer comparisons (dof = n-1 = 9).
+- Bonferroni correction for every pairwise family; report adjusted p as
+  $p_{\mathrm{adj}}$ and state family size $m$.
+- Clopper-Pearson exact CIs for proportions.
+- Exact two-sided permutation p for Spearman on the n=5 beta_sg sweep.
+- Two-sided p-values throughout, two significant figures (e.g. p=5.8e-9,
+  p=0.022, p_adj=6e-6). Use scientific notation when p < 1e-3.
+
+(5a) End of Section 2.2 (Metrics): append one sentence:
+
+"Throughout, group comparisons use Welch's $t$-test, within-seed layer
+comparisons use a paired $t$-test, families of pairwise comparisons are
+Bonferroni-corrected (reported as $p_{\mathrm{adj}}$ with family size $m$),
+and proportion intervals are Clopper-Pearson exact; all $p$-values are
+two-sided unless stated otherwise."
+
+(5b) Section 3, AFTER the chain-rule equation (Equation~\eqref{eq:chainrule})
+and BEFORE the sentence "Each extra layer therefore introduces another
+mismatched factor...", insert:
+
+"A one-way ANOVA on the per-seed final cosine ($N=10$ seeds per depth)
+confirms that depth has a highly significant effect on alignment,
+$F(3,36)=25.21$, $p=5.8\times10^{-9}$. Bonferroni-corrected Welch
+$t$-tests ($m=6$) show that depth~1 is significantly better aligned than
+every deeper network: $t(15.8)=21.81$, $p_{\mathrm{adj}}<10^{-11}$ versus
+depth~2; $t(15.4)=24.12$, $p_{\mathrm{adj}}<10^{-11}$ versus depth~3; and
+$t(9.1)=6.22$, $p_{\mathrm{adj}}=9\times10^{-4}$ versus depth~4. Pairwise
+comparisons among the deeper networks (2 vs.\ 3, 2 vs.\ 4, 3 vs.\ 4) do not
+survive correction ($p_{\mathrm{adj}}\in[0.06,0.13]$), reflecting the much
+larger seed-to-seed variance at depth~4 ($\mathrm{SD}=0.16$) caused by the
+late-training collapse documented in Section~4. The same one-factor-at-
+a-time OLS regression as in \citet{gygax2024} puts confidence intervals on
+each effect: the depth coefficient is $-0.106$ ($95\%$~CI $[-0.191,-0.020]$,
+$p=0.022$), the $\log\beta_{\mathrm{sg}}$ coefficient is $+0.069$
+($95\%$~CI $[+0.002,+0.135]$, $p=0.044$), and neither $\log(\text{width})$
+nor dataset reaches significance."
+
+(5c) Section 3, AFTER the existing description of Figure~1 (the
+capacity-controlled depth sweep) and BEFORE the paragraph "This finding
+sharpens the original result substantially.", insert:
+
+"Pairwise Welch $t$-tests on the capacity-controlled per-seed final cosines
+($N=10$ per depth, Bonferroni $m=3$) confirm that depth degrades alignment
+even when parameter count is held fixed at $\approx\!12{,}737$: depth~2
+(mean $0.803$) vs.\ depth~3 (mean $0.758$) gives $t(17.9)=5.07$,
+$p_{\mathrm{adj}}=2.4\times10^{-4}$, and depth~2 vs.\ depth~4 (mean $0.615$)
+gives $t(9.3)=3.68$, $p_{\mathrm{adj}}=0.014$. The depth-3 vs.\ depth-4
+comparison is marginal after correction ($t(9.3)=2.79$,
+$p_{\mathrm{adj}}=0.062$), again driven by the elevated depth-4 variance."
+
+(5d) Section 4, immediately AFTER the first sentence stating the 30 percent
+collapse rate, insert:
+
+"The observed rate of $3/10$ corresponds to a Clopper-Pearson 95\%
+confidence interval of $[0.067, 0.652]$; with $N=10$ the interval is wide
+but excludes zero, establishing the existence of the phenomenon while
+leaving its true rate uncertain. The mean detected collapse epoch
+$\bar{t}=242.0$ has a $95\%$ $t$-distribution confidence interval of
+$[216.8, 267.2]$ (df~$=2$); this is the conservative reading of the
+``$242\pm10.1$'' reported in the figure caption, which is a standard
+deviation rather than a confidence interval."
+
+(5e) Section 4, immediately AFTER the sentence ending "...Pearson
+$r$(saturation, cosine) $=0.008$, essentially zero correlation.", insert:
+
+"A formal test on $N=3{,}000$ epoch-by-seed pairs confirms the null:
+Pearson $r=+0.003$, two-sided $p=0.875$. We cannot reject the hypothesis
+that saturation and cosine alignment are linearly uncorrelated."
+
+(5f) Section 5, immediately AFTER the gradient-mass values
+("...mean $\|g_\ell\|_2 = 0.08, 0.17, 0.15, 0.27$ for layers 0, 1, 2,
+readout, the global cosine tracks the readout's cosine almost exactly."),
+insert:
+
+"The per-layer separation is statistically very clean. Across $N=10$ seeds,
+the per-seed final cosines are $0.056\pm0.097$, $0.108\pm0.063$,
+$0.160\pm0.061$, and $0.467\pm0.056$ for hidden layers $0$ through $3$
+respectively. The Linear readout is identical for true vs.\ surrogate by
+construction (no surrogate activation between it and the loss), so its
+cosine is trivially $1.0$; the statistical test is therefore between
+hidden layers only. A within-seed paired $t$-test (Bonferroni $m=3$) shows
+that the readout-side hidden layer is far better aligned than its neighbour
+($t(9)=10.73$, $p_{\mathrm{adj}}=6\times10^{-6}$), while the three
+input-side hidden layers are statistically indistinguishable from one
+another (L2 vs.\ L1: $t(9)=1.94$, $p_{\mathrm{adj}}=0.25$; L1 vs.\ L0:
+$t(9)=1.17$, $p_{\mathrm{adj}}=0.81$). The data therefore show a single
+coherent output-aligned regime significantly separated from a single
+coherent input-orthogonal regime, rather than a smooth gradient of
+alignment across layers."
+
+(5g) Section 6, in the existing $\beta_{\mathrm{sg}}$ robustness paragraph,
+immediately AFTER the sentence ending "...drifts from 0.66 to 0.57 as
+$\beta_{\mathrm{sg}}$ increases from 2 to 10.", insert:
+
+"The monotone drift in final alignment is itself statistically significant
+under an exact two-sided permutation Spearman test ($\rho=-1.0$, $p=0.017$,
+$n=5$ levels), so the small final-cosine effect of $\beta_{\mathrm{sg}}$
+is real even though the collapse rate is identical at all five steepnesses
+(a $2\times5$ permutation chi-square gives $p=1.00$, as expected when every
+cell is exactly $3/10$)."
+
+(5h) Section 6, in the existing perturbation-power paragraph, immediately
+AFTER "...McNemar $p=0.0654$.", insert:
+
+"The equivalent exact binomial test on the $11$ discordant pairs ($9$
+control-only collapses vs.\ $2$ probed-only collapses) gives $p=0.065$
+(Newcombe 95\% CI on the rate difference $[-0.060, +0.284]$, which includes
+zero). The directional effect is consistent across two independent
+statistical lenses but the perturbation result remains formally
+non-significant at $\alpha=0.05$."
+
+(5i) Reproducibility note: at the very end of the existing "Code
+availability" block, append one sentence:
+
+"All statistical tests reported in this paper are reproduced from saved
+per-seed scalars by \texttt{stats\_significance.py}, which reads
+\texttt{results/per\_seed\_data.json}."
+
+
+==============================================================================
+WHAT NOT TO DO
+==============================================================================
+- Do not perform Part 6 of the original revision plan (the appendix on
+  surrogate-estimator MSE). Skip it entirely.
+- Do not add new figures, tables, or unrelated sections.
+- Do not modify the conclusion.
+- Do not modify any figure caption except Figure 3 as specified in (4f).
+- Do not invent any number that is not in the stats_results.txt block at
+  the bottom of this prompt.
+- Do not reorder sections, equations, figures, or references.
+- Do not delete content unless explicitly told to.
+
+
+==============================================================================
+OUTPUT FORMAT
+==============================================================================
+Return:
+
+1. One fenced LaTeX code block (```latex ... ```) containing the COMPLETE
+   revised paper source ready to compile, with every Part 1-5 edit applied.
+2. After the code block, a short bullet list:
+   - confirmation that each of (1)-(5i) was applied,
+   - the anchor sentence used for each insertion (so the human can verify
+     nothing was moved),
+   - any place where the PDF was ambiguous and you had to make a choice,
+     with the choice you made.
+
+
+==============================================================================
+RAW STATISTICS (the only numbers you may cite in Part 5)
+==============================================================================
+
+stats_results.txt
+=================
+
+==============================================================================
+1. CHAIN-LENGTH EFFECT (depth ablation, per-seed)
+==============================================================================
+N seeds = 10, window = last 50 epochs of 300.
+Per-depth final cosine (mean of last 50 epochs):
+  depth=1: n=10, mean=0.9310, sd=0.0125
+  depth=2: n=10, mean=0.7776, sd=0.0184
+  depth=3: n=10, mean=0.7559, sd=0.0193
+  depth=4: n=10, mean=0.6152, sd=0.1602
+
+One-way ANOVA across depths: F=25.2084, p=5.80e-09
+
+Pairwise Welch t-tests with Bonferroni correction (m=6):
+  pair               t       dof         raw p         adj p
+  d1 vs d2        21.810     15.80      3.24e-13      1.94e-12
+  d1 vs d3        24.117     15.39      1.21e-13      7.24e-13
+  d1 vs d4         6.216      9.11        0.0001        0.0009
+  d2 vs d3         2.569     17.96        0.0193        0.1159
+  d2 vs d4         3.185      9.24        0.0107        0.0645
+  d3 vs d4         2.758      9.26        0.0216        0.1298
+
+OLS regression (final cosine ~ depth + log(beta_sg) + log(width) + dataset):
+  n=13, residual dof=8, sigma^2=0.007778
+  name              coef        SE                  95% CI       t         p
+  intercept       0.6958    0.2384       [+0.146, +1.246]    2.92    0.0193
+  depth          -0.1056    0.0371       [-0.191, -0.020]   -2.85    0.0216
+  log(beta_sg)    0.0687    0.0288       [+0.002, +0.135]    2.38    0.0445
+  log(width)      0.0498    0.0450       [-0.054, +0.153]    1.11    0.3008
+  dataset[moons]  0.0327    0.0922       [-0.180, +0.245]    0.36    0.7318
+
+==============================================================================
+2. CONTROLLED-DEPTH EXPERIMENT (capacity held fixed, per-seed)
+==============================================================================
+Target params = 12737; widths per depth: {1: 3184, 2: 110, 3: 78, 4: 64}
+Per-depth final cosine (mean of last 50 epochs):
+  depth=1 (width=3184): n=10, mean=0.9866, sd=0.0003
+  depth=2 (width=110):  n=10, mean=0.8031, sd=0.0193
+  depth=3 (width=78):   n=10, mean=0.7576, sd=0.0208
+  depth=4 (width=64):   n=10, mean=0.6152, sd=0.1602
+
+Pairwise Welch t-tests with Bonferroni correction (m=3):
+  pair               t       dof         raw p         adj p
+  d2 vs d3         5.070     17.91      8.10e-05        0.0002
+  d3 vs d4         2.788      9.30        0.0205        0.0615
+  d2 vs d4         3.683      9.26        0.0048        0.0144
+
+==============================================================================
+3. COLLAPSE RATE
+==============================================================================
+Baseline (depth=4, moons, beta_sg=5): 3/10 seeds collapsed.
+Observed proportion = 0.300.
+95% Clopper-Pearson exact CI = [0.067, 0.652].
+
+==============================================================================
+4. COLLAPSE TIMING
+==============================================================================
+Detected collapse epochs: [244, 251, 231]
+Mean = 242.00, SD = 10.15, n = 3
+95% t-distribution CI (df=2): [216.79, 267.21]
+
+==============================================================================
+5. PER-LAYER COSINE SIMILARITY (paired t, Bonferroni m=3)
+==============================================================================
+N=10 seeds, depth=4 baseline. 5 Linear layers (0=input-side, 4=readout).
+Layer 4 readout cosine is trivially 1.0; comparisons are between hidden
+layers 0..3 only.
+
+Per-layer mean +/- sd:
+  layer 0: 0.0559 +/- 0.0967
+  layer 1: 0.1077 +/- 0.0627
+  layer 2: 0.1604 +/- 0.0612
+  layer 3: 0.4666 +/- 0.0559
+
+Pairwise paired t-tests:
+  L3 vs L2: t(9)=10.729, raw p=1.99e-06, adj p=5.96e-06
+  L2 vs L1: t(9)= 1.939, raw p=0.0844,   adj p=0.2533
+  L1 vs L0: t(9)= 1.173, raw p=0.2710,   adj p=0.8131
+
+==============================================================================
+6. SATURATION vs COSINE CORRELATION
+==============================================================================
+N pairs (epoch x seed) = 3000.
+Pearson  r   = +0.0029, two-sided p = 0.875   (null cannot be rejected)
+Spearman rho = -0.1454, two-sided p = 1.20e-15
+
+==============================================================================
+7. BETA_SG SWEEP
+==============================================================================
+Per-beta_sg summary (10 seeds per cell):
+  beta_sg    collapse    mean_final_cos
+        2        3/10            0.6639
+        3        3/10            0.6530
+        5        3/10            0.6163
+        7        3/10            0.5861
+       10        3/10            0.5706
+
+Collapse rate identical at 3/10 across all five beta_sg:
+  2x5 permutation chi-square: p = 1.00
+
+Final-cosine drift is monotone:
+  Spearman rho = -1.0000
+  Exact two-sided permutation p (n=5, 120 perms) = 0.0167
+
+==============================================================================
+8. PERTURBATION SENSITIVITY (paired, N=60)
+==============================================================================
+Discordant pairs: control-only collapse = 9, probed-only collapse = 2.
+Exact binomial on 9/11 (H0: p=0.5): p = 0.0654.
+McNemar p (from JSON):              p = 0.0654.
+Newcombe 95% CI on rate diff:      [-0.060, +0.284]   (includes zero).
+
+===== END PROMPT =====
