@@ -21,3 +21,8 @@ decisions_needed.txt
 paper_stats_insertions.tex
 regression_experiment_proposal.tex
 PDFs/
+
+# Local-only paper drafts
+surrogate_gradient_paper_combined.tex
+surrogate_gradient_paper_combined (1).tex
+surrogate_gradient_paper_finalv2.tex
