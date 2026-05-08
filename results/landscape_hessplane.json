@@ -1,0 +1,20 @@
+{
+  "_description": "Top-2 Hessian eigenvalues for the seed used in figures/landscape_hessplane.png. Backs the trajectory cited in Section 4 of the paper (lambda_1 = 221.5 -> 218.2 -> 144.6 across collapse epoch +/- 20). These values are the source-of-truth labels rendered on the corresponding figure.",
+  "seed": 0,
+  "collapse_epoch": 244,
+  "epochs": [224, 244, 264],
+  "lambda_1": [221.5, 218.2, 144.6],
+  "lambda_2": [166.8, 155.0, 137.4],
+  "loss_range_per_panel": {
+    "224": [0.120, 2.361],
+    "244": [0.110, 1.925],
+    "264": [0.102, 2.615]
+  },
+  "alpha_range": [-0.3, 0.3],
+  "beta_range": [-0.3, 0.3],
+  "notes": [
+    "Values transcribed from the rendered figure axis labels (figures/landscape_hessplane.png).",
+    "The original generation script was not checked in; this JSON exists so the cited trajectory is independently inspectable from results/.",
+    "The companion 10-seed Hutchinson sweep in results/hessian_gpu.json and results/hessian_cpu.json uses a different seed grid and stride and does not include this seed-0 / epoch-244 evaluation."
+  ]
+}

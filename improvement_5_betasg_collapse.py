@@ -25,7 +25,7 @@ from sg_experiment.models import MLPSurrogate, MLPTrue
 
 FIG_DIR = "figures"
 RESULTS_DIR = "results"
-N_SEEDS = 10
+N_SEEDS = 40
 BETAS_SG = [2, 3, 5, 7, 10]
 
 

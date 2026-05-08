@@ -285,7 +285,7 @@ def main():
     os.makedirs(FIG_DIR, exist_ok=True)
     print(f"Using device: {DEVICE}")
 
-    n_seeds = 10
+    n_seeds = 40
     print(f"\nRunning depth=4 moons sweep across {n_seeds} seeds...")
     histories, collapses = [], []
     for s in range(n_seeds):

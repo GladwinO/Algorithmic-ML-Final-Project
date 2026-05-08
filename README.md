@@ -282,11 +282,15 @@ asked: what could still be wrong? Each weakness got its own script.
 #### (12) `improvement_5_betasg_collapse.py` — β_sg sweep
 - *Why:* (1) showed β_sg matters little for the *static* metric; does it
   matter for the *late-training collapse event*?
-- *Choices:* `β_sg ∈ {2, 3, 5, 7, 10}`, 10 seeds each, output collapse rate
-  + median epoch + final cos sim.
-- *Result:* collapse rate is **flat at 3/10 across the entire sweep** (95 %
-  bootstrap CI [0, 0.6]); only the final cos sim drifts modestly. Collapse
-  is not a β_sg-knob phenomenon.
+- *Choices:* `β_sg ∈ {2, 3, 5, 7, 10}`, **40 seeds each** (a 10-seed pilot
+  produced an apparent monotone drift in mean final cos that did not
+  survive the larger sample), output collapse rate + median epoch +
+  final cos sim.
+- *Result:* collapse rate sits in $[0.50, 0.58]$ with heavily overlapping
+  Clopper–Pearson CIs, median collapse epoch fluctuates non-monotonically
+  in $[154, 189]$, and mean final cos is in a tight band $[0.490, 0.516]$.
+  Late-training collapse is **insensitive to β_sg** over this range — not
+  a surrogate-slope-mismatch phenomenon.
 
 #### (13) `improvement_6_perturbation_n60.py` — N = 60 rerun
 - *Why:* (8) was just-marginal at N = 30; double N for power.
